@@ -14,6 +14,13 @@ class InputExample(object):
     self.text_a_label = text_a_label
     self.text_b_label = text_b_label
     self.class_label = class_label
+  
+  def __str__(self):
+    return "\ntext_a :" + str(self.text_a) \
+         + "\ntext_b :" + str(self.text_b) \
+         + "\ntext_a_label :" + str(self.text_a_label) \
+         + "\ntext_b_label :" + str(self.text_b_label) \
+         + "\nclass_label :" + str(self.class_label)
 
 
 def _truncate_seq_pair(tokens_a, tokens_b, max_length):

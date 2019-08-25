@@ -7,7 +7,7 @@ import tensorflow as tf
 import util
 
 # Directory of bert, cloned from github.com/google-research/bert
-sys.path.append("/path/to/bert")
+sys.path.append("/ml/bert")
 import tokenization
 
 
@@ -185,3 +185,17 @@ def create_examples(dialog_filename, slot_list, set_type, use_asr_hyp=0,
             class_label=class_type_dict))
   return examples
 
+
+if __name__ == '__main__':
+
+    basic_tokenizer = tokenization.BasicTokenizer()
+    print(basic_tokenizer.tokenize('There are no eritrean restaurants in town.'))
+
+    class_types = ['none', 'dontcare', 'copy_value', 'unpointable']
+    slot_list = ['area', 'food', 'price range']
+
+    examples = create_examples('/ml/woz/woz_train_en.json', slot_list, 'train')
+
+    print(examples[0])
+    print()
+    print(examples[1])
