@@ -189,13 +189,13 @@ def create_examples(dialog_filename, slot_list, set_type, use_asr_hyp=0,
 if __name__ == '__main__':
 
     basic_tokenizer = tokenization.BasicTokenizer()
-    print(basic_tokenizer.tokenize('There are no eritrean restaurants in town.'))
+    #print(basic_tokenizer.tokenize('There are no eritrean restaurants in town.'))
 
     class_types = ['none', 'dontcare', 'copy_value', 'unpointable']
     slot_list = ['area', 'food', 'price range']
 
     examples = create_examples('/ml/woz/woz_train_en.json', slot_list, 'train')
 
-    print(examples[0])
-    print()
-    print(examples[1])
+    for example in examples:
+        print(example)
+        print()

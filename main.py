@@ -204,6 +204,7 @@ def convert_single_example(ex_index, example, slot_list, class_types, max_seq_le
 
     assert len(token_labels_a) == len(tokens_a)
     assert len(token_labels_b) == len(tokens_b)
+    
     token_label_ids = util.get_token_label_ids(
       token_labels_a, token_labels_b, max_seq_length)
 

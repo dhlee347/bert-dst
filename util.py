@@ -16,11 +16,12 @@ class InputExample(object):
     self.class_label = class_label
   
   def __str__(self):
-    return "\ntext_a :" + str(self.text_a) \
-         + "\ntext_b :" + str(self.text_b) \
-         + "\ntext_a_label :" + str(self.text_a_label) \
-         + "\ntext_b_label :" + str(self.text_b_label) \
-         + "\nclass_label :" + str(self.class_label)
+    return "\nguid: " + str(self.guid) \
+         + "\ntext_a: " + str(self.text_a) \
+         + "\ntext_b: " + str(self.text_b) \
+         + "\ntext_a_label: " + str(self.text_a_label) \
+         + "\ntext_b_label: " + str(self.text_b_label) \
+         + "\nclass_label: " + str(self.class_label)
 
 
 def _truncate_seq_pair(tokens_a, tokens_b, max_length):
