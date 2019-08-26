@@ -125,7 +125,7 @@ class InputExample(object):
         for dialog in json.load(open(filepath)):
             for turn in dialog['dialogue']:
                 guid = split+'-'+str(dialog['dialogue_idx'])+'-'+str(turn['turn_idx'])
-                turn_label = {fix_label(s): fix_label(v) for s, v in turn['turn_label']} # {slot: value}
+                turn_label = {fix_label(s): fix_label(v) for s, v in turn['turn_label']}
                 sys_utt_tokens = utils.tokenize(turn['system_transcript'])
                 usr_utt_tokens = utils.tokenize(turn['transcript'])
                 label_dict = {slot: get_utt_label(turn_label.get(slot, 'none'), 
