@@ -1,12 +1,14 @@
 
+import sys
 import random
 import json
 
 import numpy as np
 
-import tokenization
-
 import utils
+
+sys.path.append("/ml/bert")
+import tokenization
 
 
 SEMANTIC_DICT = {
@@ -133,25 +135,27 @@ class InputExample(object):
                                                   usr_utt_tokens) for slot in slot_list}
 
                 example = cls(guid, (sys_utt_tokens, usr_utt_tokens), label_dict)
-                if [v for v in label_dict.values() if v[0] == 'unpointable']:
-                    print('\n<Unpointable>'+str(example))
+                if [v for v in label_dict.values() if v[-1] == 'unpointable']: # to be changed
+                    #print('\n<Unpointable>'+str(example))
                     if not exclude_unpointable:
                         yield example
                 else:
                     yield example
 
 
-class InputFeatures(object):
+class InputFeature(object):
     def __init__(self,
+                 guid,
+                 tokens,
                  input_ids,
                  input_mask,
                  segment_ids,
                  start_pos,
                  end_pos,
                  class_label_id,
-                 is_real_example=True,
-                 guid="NONE"):
+                 is_real_example=True):
         self.guid = guid
+        self.tokens = tokens
         self.input_ids = input_ids
         self.input_mask = input_mask
         self.segment_ids = segment_ids
@@ -159,6 +163,15 @@ class InputFeatures(object):
         self.end_pos = end_pos
         self.class_label_id = class_label_id
         self.is_real_example = is_real_example
+
+    def __str__(self): #"\n<tokens>\n" + str(self.tokens) \
+        return "" \
+            + "\n<input_ids>\n" + str(self.input_ids) \
+            + "\n<segment_ids>\n" + str(self.segment_ids) \
+            + "\n<start_pos>\n" + str(self.start_pos) \
+            + "\n<end_pos>\n" + str(self.end_pos) \
+            + "\n<class_label_id>\n" + str(self.class_label_id)
+
 
     @classmethod
     def make(cls, example, tokenizer, max_len):
@@ -185,7 +198,7 @@ class InputFeatures(object):
         segment_ids = [0]*(2+len(sys_tokens)) + [1]*(1+len(usr_tokens))
         utils.pad(max_len, 0, input_ids, input_mask, segment_ids)
 
-        return cls(example.guid, input_ids, input_mask, segment_ids, 
+        return cls(example.guid, tokens, input_ids, input_mask, segment_ids, 
                     start_pos_dict, end_pos_dict, class_label_id_dict)
 
 
@@ -204,7 +217,7 @@ def get_start_end_pos(class_type, token_labels, max_len):
     return start_pos, end_pos
 
 
-def sub_tokenize(utt_tokens, utt_label, joint_utt_label, tokenizer, slot_value_dropout=0.3):
+def sub_tokenize(utt_tokens, utt_label, joint_utt_label, tokenizer, slot_value_dropout=0.0):
     tokens, token_labels = [], []
     for token, token_label, joint_label in zip(utt_tokens, utt_label, joint_utt_label):
         sub_tokens = tokenizer.tokenize(token)
@@ -222,13 +235,15 @@ def sub_tokenize(utt_tokens, utt_label, joint_utt_label, tokenizer, slot_value_d
 
 
 if __name__ == '__main__':
+    tokenizer = tokenization.FullTokenizer(
+        vocab_file='/ml/uncased_L-12_H-768_A-12/vocab.txt',
+        do_lower_case=True
+    )
+
     examples = list(InputExample.read_woz('/ml/woz/woz_train_en.json', 'train'))
     
-    for example in examples[0:2]:
-        print(example)
-        print()
-
-
-
+    for example in examples:
+        #print(example)
+        print(InputFeature.make(example, tokenizer, 128))
 
 

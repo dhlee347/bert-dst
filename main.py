@@ -76,6 +76,15 @@ class InputFeatures(object):
     self.class_label_id = class_label_id
     self.is_real_example = is_real_example
 
+  def __str__(self): #"\n<tokens>\n" + str(self.tokens) \
+    return "" \
+        + "\n<input_ids>\n" + str(self.input_ids) \
+        + "\n<segment_ids>\n" + str(self.segment_ids) \
+        + "\n<start_pos>\n" + str(self.start_pos) \
+        + "\n<end_pos>\n" + str(self.end_pos) \
+        + "\n<class_label_id>\n" + str(self.class_label_id)
+
+
 
 class Dstc2Processor(object):
   class_types = ['none', 'dontcare', 'copy_value', 'unpointable']
@@ -259,6 +268,8 @@ def file_based_convert_examples_to_features(
 
     feature, input_text_too_long = convert_single_example(ex_index, example, slot_list, class_types,
                                      max_seq_length, tokenizer)
+
+    print(feature)
     total_cnt += 1
     if input_text_too_long:
       too_long_cnt += 1
@@ -849,9 +860,22 @@ def main(_):
 
 
 if __name__ == "__main__":
-  flags.mark_flag_as_required("data_dir")
-  flags.mark_flag_as_required("task_name")
-  flags.mark_flag_as_required("vocab_file")
-  flags.mark_flag_as_required("bert_config_file")
-  flags.mark_flag_as_required("output_dir")
-  tf.app.run()
+  #flags.mark_flag_as_required("data_dir")
+  #flags.mark_flag_as_required("task_name")
+  #flags.mark_flag_as_required("vocab_file")
+  #flags.mark_flag_as_required("bert_config_file")
+  #flags.mark_flag_as_required("output_dir")
+  #tf.app.run()
+
+  tokenizer = tokenization.FullTokenizer(
+    vocab_file='/ml/uncased_L-12_H-768_A-12/vocab.txt',
+    do_lower_case=True
+  )
+
+  class_types = ['none', 'dontcare', 'copy_value', 'unpointable']
+  slot_list = ['area', 'food', 'price range']
+
+  examples = dataset_dstc2.create_examples('/ml/woz/woz_train_en.json', slot_list, 'train')
+
+  file_based_convert_examples_to_features( \
+    examples, slot_list, class_types, 128, tokenizer, 'train.tfr')
